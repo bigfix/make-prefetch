@@ -12,6 +12,8 @@ Create a prefetch statement for IBM Endpoint Manager ActionScript
 Options:
   -a, --algorithm ALGORITHM    Hash algorithm to use (all, sha1, sha256)
                                default: all
+  -n, --name NAME              The name to use for the file
+                               default: the name of the file
   -o, --output OUTPUT          Output format (prefetch, davis, value)
                                default: prefetch
   -h, --help                   Print this help message and exit
@@ -92,6 +94,8 @@ parser.add_argument(
   choices=['value', 'davis', 'prefetch'],
   default='prefetch')
 
+parser.add_argument('-n', '--name', required=False)
+
 if '-h' in sys.argv or '--help' in sys.argv:
   print(usage)
   sys.exit()
@@ -99,6 +103,9 @@ if '-h' in sys.argv or '--help' in sys.argv:
 args = parser.parse_args()
 
 file = hash_file(args)
+
+if args.name != None:
+  file['name'] = args.name
 
 if args.output == 'value':
   output = value_output(args.algorithm)
