@@ -4,8 +4,10 @@ from argparse import ArgumentParser
 import hashlib
 import os
 import sys
+import urllib2
+from urlparse import urlparse
 
-usage = """make-prefetch.py [options] <file>
+usage = """make-prefetch.py [options] <file or url>
 
 Create a prefetch statement for IBM Endpoint Manager ActionScript
 
@@ -19,7 +21,11 @@ Options:
   -h, --help                   Print this help message and exit
 
 Examples:
-  Create a 9.1 style pretch statement
+  Create a pretch statement from a URL
+
+    make-prefetch.py http://example.com/hello.txt
+
+  Create a prefetch statement from a file
 
     make-prefetch.py hello.txt
 
@@ -50,6 +56,30 @@ def hash_file(args):
     'name': os.path.basename(args.file),
     'url': 'http://REPLACEME',
     'size': os.path.getsize(args.file),
+    'sha1': sha1.hexdigest(),
+    'sha256': sha256.hexdigest()
+  }
+
+def hash_url(args):
+  response = urllib2.urlopen(args.file)
+
+  size = 0
+  sha1 = hashlib.sha1()
+  sha256 = hashlib.sha256()
+
+  while True:
+    chunk = response.read(4096)
+    if not chunk:
+      break
+
+    size += len(chunk)
+    sha1.update(chunk)
+    sha256.update(chunk)
+
+  return {
+    'name': os.path.basename(urlparse(args.file).path),
+    'url': args.file,
+    'size': size,
     'sha1': sha1.hexdigest(),
     'sha256': sha256.hexdigest()
   }
@@ -102,10 +132,16 @@ if '-h' in sys.argv or '--help' in sys.argv:
 
 args = parser.parse_args()
 
-file = hash_file(args)
+if "://" in args.file:
+  file = hash_url(args)
+else:
+  file = hash_file(args)
 
 if args.name != None:
   file['name'] = args.name
+
+if file['name'] == '':
+  file['name'] = 'REPLACEME'
 
 if args.output == 'value':
   output = value_output(args.algorithm)
