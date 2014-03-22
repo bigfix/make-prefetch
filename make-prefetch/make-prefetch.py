@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from argparse import ArgumentParser
-from hashlib import sha1, sha256
+import hashlib
 import os
 import sys
 
@@ -30,59 +30,53 @@ Examples:
     make-prefetch.py --algorithm sha1 --output davis hello.txt
 """
 
-def hash(path):
-  hashes = {}
-  f = open(path, 'rb')
-  contents = f.read()
-  hashes['sha1'] = sha1(contents).hexdigest()
-  hashes['sha256'] = sha256(contents).hexdigest()
+def hash_file(args):
+  f = open(args.file, 'rb')
+
+  sha1 = hashlib.sha1()
+  sha256 = hashlib.sha256()
+
+  while True:
+    chunk = f.read(4096)
+    if not chunk:
+      break
+    sha1.update(chunk)
+    sha256.update(chunk)
+
   f.close()
-  return hashes
+  return {
+    'name': os.path.basename(args.file),
+    'url': 'http://REPLACEME',
+    'size': os.path.getsize(args.file),
+    'sha1': sha1.hexdigest(),
+    'sha256': sha256.hexdigest()
+  }
 
-def make_prefetch(file, algorithm):
-  hashes = hash(file)  
-  if algorithm == 'sha256':
-    line = "prefetch {name} size:{size} http://REPLACEME sha256:{sha256}"
-    return line.format(name=os.path.basename(file),
-                       sha256=hashes['sha256'],
-                       size=os.path.getsize(file))
-  elif algorithm == 'sha1':
-    line = "prefetch {name} sha1:{sha1} size:{size} http://REPLACEME"
-    return line.format(name=os.path.basename(file),
-                       sha1=hashes['sha1'],
-                       size=os.path.getsize(file))
-  else:
-    line = ("prefetch {name} sha1:{sha1} size:{size} http://REPLACEME "
-            "sha256:{sha256}")
-    return line.format(name=os.path.basename(file),
-                       sha1=hashes['sha1'],
-                       sha256=hashes['sha256'],
-                       size=os.path.getsize(file))
+def prefetch_output(algorithm):
+  if args.algorithm == 'sha256':
+    return "prefetch {name} size:{size} {url} sha256:{sha256}"
+  if args.algorithm == 'sha1':
+    return "prefetch {name} sha1:{sha1} size:{size} {url}"
+  return "prefetch {name} sha1:{sha1} size:{size} {url} sha256:{sha256}"
 
-def make_value(file, algorithm):
-  if algorithm == 'all':
-    print("You must specify a hash algorithm to use")
-    sys.exit(2)
-
-  return hash(file)[algorithm]
-
-def make_davis(file, algorithm):
+def davis_output(algorithm):
   if algorithm != 'all' and algorithm != 'sha1':
     print("Algorithm {0} is not supported in davis downloads".format(algorithm))
     sys.exit(2)
+  return ("begin prefetch block\n"
+          "add prefetch item name={name} sha1={sha1} size={size} url={url}\n"
+          "collect prefetch items\n"
+          "end prefetch block")
 
-  davis = """begin prefetch block
-add prefetch item name={name} sha1={sha1} size={size} url=http://REPLACEME
-collect prefetch items
-end prefetch block"""
-  return davis.format(name=os.path.basename(file),
-                      sha1=hash(file)['sha1'],
-                      size=os.path.getsize(file))
+def value_output(algorithm):
+  if algorithm == 'sha1':
+    return "{sha1}"
+  if algorithm == 'sha256':
+    return "{sha256}"
+  print("You must specify a hash algorithm to use")
+  sys.exit(2)
 
-parser = ArgumentParser(description="Create a prefetch statement for "
-                                    "IBM Endpoint Manager ActionScript",
-                        add_help=False,
-                        usage=usage)
+parser = ArgumentParser(add_help=False, usage=usage)
 
 parser.add_argument('file')
 
@@ -104,9 +98,17 @@ if '-h' in sys.argv or '--help' in sys.argv:
 
 args = parser.parse_args()
 
+file = hash_file(args)
+
 if args.output == 'value':
-  print(make_value(args.file, args.algorithm))
+  output = value_output(args.algorithm)
 elif args.output == 'davis':
-  print(make_davis(args.file, args.algorithm))
+  output = davis_output(args.algorithm)
 else:
-  print(make_prefetch(args.file, args.algorithm))
+  output = prefetch_output(args.algorithm)
+
+print(output.format(name=file['name'],
+                    size=file['size'],
+                    url=file['url'],
+                    sha1=file['sha1'],
+                    sha256=file['sha256']))
