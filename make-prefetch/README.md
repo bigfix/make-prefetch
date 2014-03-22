@@ -11,9 +11,9 @@ Suppose you want to create a prefetch statement to download
 
 The easiest way to do this is to run `make-prefetch.py` on the URL:
 
-    $ make-prefetch.py --name hodor.jpg http://i.imgur.com/YAUeUOG.jpg
+    $ make-prefetch.py http://i.imgur.com/YAUeUOG.jpg
 
-That will output a prefetch statement to download the picture as `hodor.jpg`:
+That will output a prefetch statement to download the picture:
 
     prefetch YAUeUOG.jpg sha1:ce842e0af799f2ba476511c8fbfdc3bf89612dd0 size:57656 http://i.imgur.com/YAUeUOG.jpg sha256:74f69205a016a3896290eae03627e15e8dfeba812a631b5e0afca140722a322b
 
