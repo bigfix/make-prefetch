@@ -40,11 +40,14 @@ This will output a prefetch statement with `http://REPLACEME` as the URL:
 
     prefetch hodor.jpg sha1:ce842e0af799f2ba476511c8fbfdc3bf89612dd0 size:57656 http://REPLACEME sha256:74f69205a016a3896290eae03627e15e8dfeba812a631b5e0afca140722a322b
 
-You can then edit `http://REPLACEME` to instead be the actual URL for the image,
-and paste the result directly into your actionscript to download the
-picture as `hodor.jpg`:
+To specify the URL to download the file from, you can use the `--url` argument:
 
-    prefetch hodor.jpg sha1:ce842e0af799f2ba476511c8fbfdc3bf89612dd0 size:57656 http://i.imgur.com/YAUeUOG.jpg sha256:74f69205a016a3896290eae03627e15e8dfeba812a631b5e0afca140722a322b
+    $ make-prefetch.py hodor.jpg --url http://example.com/winterfell/hodor.jpg
+
+This will output the same prefetch statement as before, but the URL will be
+`http://example.com/winterfell/hodor.jpg`.
+
+    prefetch hodor.jpg sha1:ce842e0af799f2ba476511c8fbfdc3bf89612dd0 size:57656 http://example.com/winterfell/hodor.jpg sha256:74f69205a016a3896290eae03627e15e8dfeba812a631b5e0afca140722a322b
 
 Support
 ===

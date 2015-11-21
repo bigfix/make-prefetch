@@ -17,6 +17,8 @@ Options:
                                default: all
   -n, --name NAME              The name to use for the file
                                default: the name of the file
+  -u, --url URL                The url to use for the file
+                               default: the url of the file
   -o, --output OUTPUT          Output format (prefetch, davis, value)
                                default: prefetch
   -h, --help                   Print this help message and exit
@@ -127,6 +129,7 @@ parser.add_argument(
   default='prefetch')
 
 parser.add_argument('-n', '--name', required=False)
+parser.add_argument('-u', '--url', required=False)
 
 if '-h' in sys.argv or '--help' in sys.argv:
   print(usage)
@@ -144,6 +147,12 @@ if args.name != None:
 
 if file['name'] == '':
   file['name'] = 'REPLACEME'
+
+if args.url != None:
+  file['url'] = args.url
+
+if file['url'] == '':
+  file['url'] = 'http://REPLACEME'
 
 if args.output == 'value':
   output = value_output(args.algorithm)
