@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 from argparse import ArgumentParser
 import hashlib
 import os
@@ -93,7 +94,8 @@ def prefetch_output(algorithm):
 
 def davis_output(algorithm):
   if algorithm != 'all' and algorithm != 'sha1':
-    print("Algorithm {0} is not supported in davis downloads".format(algorithm))
+    print("Algorithm {0} is not supported in davis downloads".format(algorithm),
+          file=sys.stderr)
     sys.exit(2)
   return ("begin prefetch block\n"
           "add prefetch item name={name} sha1={sha1} size={size} url={url}\n"
@@ -105,7 +107,7 @@ def value_output(algorithm):
     return "{sha1}"
   if algorithm == 'sha256':
     return "{sha256}"
-  print("You must specify a hash algorithm to use")
+  print("You must specify a hash algorithm to use", file=sys.stderr)
   sys.exit(2)
 
 parser = ArgumentParser(add_help=False, usage=usage)
