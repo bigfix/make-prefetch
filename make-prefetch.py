@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+
+try:
+  from urllib.parse import urlparse
+  from urllib.request import urlopen
+except ImportError:
+  from urlparse import urlparse
+  from urllib2 import urlopen
+
 from argparse import ArgumentParser
 import hashlib
 import os
 import sys
-import urllib2
-from urlparse import urlparse
 
 usage = """make-prefetch.py [options] <file or url>
 
@@ -64,7 +70,7 @@ def hash_file(args):
   }
 
 def hash_url(args):
-  response = urllib2.urlopen(args.file)
+  response = urlopen(args.file)
 
   size = 0
   sha1 = hashlib.sha1()
