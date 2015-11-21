@@ -1,8 +1,7 @@
 make-prefetch
 ===
 
-This is a tool to generate `prefetch` statements for downloads in BigFix
-ActionScript.
+This is a tool to generate [prefetch](https://developer.bigfix.com/action-script/reference/download/prefetch.html) statements for downloads in BigFix ActionScript.
 
 ## Using a URL argument
 
