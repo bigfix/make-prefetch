@@ -9,7 +9,7 @@ from urlparse import urlparse
 
 usage = """make-prefetch.py [options] <file or url>
 
-Create a prefetch statement for IBM Endpoint Manager ActionScript
+Create a prefetch statement for BigFix ActionScript
 
 Options:
   -a, --algorithm ALGORITHM    Hash algorithm to use (all, sha1, sha256)

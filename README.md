@@ -1,8 +1,8 @@
 make-prefetch
 ===
 
-This is a tool to generate `prefetch` statements for downloads in IBM Endpoint
-Manager.
+This is a tool to generate `prefetch` statements for downloads in BigFix
+ActionScript.
 
 ## Using a URL argument
 
