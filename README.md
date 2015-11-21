@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bigfix/make-prefetch.svg?branch=master)](https://travis-ci.org/bigfix/make-prefetch) [![Coverage Status](https://coveralls.io/repos/bigfix/make-prefetch/badge.svg?branch=travis-build&service=github)](https://coveralls.io/github/bigfix/make-prefetch?branch=travis-build)
+
 make-prefetch
 ===
 
