@@ -57,7 +57,7 @@ def hash_file(args):
   f.close()
   return {
     'name': os.path.basename(args.file),
-    'url': 'http://REPLACEME',
+    'url': '',
     'size': os.path.getsize(args.file),
     'sha1': sha1.hexdigest(),
     'sha256': sha256.hexdigest()

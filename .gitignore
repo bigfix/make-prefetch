@@ -1,0 +1,5 @@
+.DS_Store
+test/htmlcov
+test/.coverage
+.vagrant
+Vagrantfile
